@@ -1,5 +1,7 @@
 import Applicant from "../models/applicant";
+import Volunteer from "../models/volunteer";
 import Workshop from "../models/workshop";
+import Mentor from "../models/mentor";
 
 const validateHacker = applicant =>
   new Promise(async (resolve, reject) => {
@@ -34,4 +36,36 @@ const validateWorkshop = applicant =>
     resolve();
   });
 
-export default { validateHacker, validateWorkshop };
+const validateMentor = applicant =>
+  new Promise(async (resolve, reject) => {
+    const isApplicant = await Mentor.findOne({ email: applicant.email });
+
+    if (isApplicant) reject("Applicant is already signed up.");
+
+    if (!applicant.firstName) reject("First Name was not defined");
+    if (!applicant.lastName) reject("Last Name was not defined");
+    if (!applicant.email) reject("Email was not defined");
+    if (!applicant.skills) reject("No skills were defined");
+
+    resolve();
+  });
+
+const validateVolunteer = applicant =>
+  new Promise(async (resolve, reject) => {
+    const isApplicant = await Volunteer.findOne({ email: applicant.email });
+
+    if (isApplicant) reject("Applicant is already signed up.");
+
+    if (!applicant.firstName) reject("First Name was not defined");
+    if (!applicant.lastName) reject("Last Name was not defined");
+    if (!applicant.email) reject("Email was not defined");
+
+    resolve();
+  });
+
+export default {
+  validateHacker,
+  validateWorkshop,
+  validateMentor,
+  validateVolunteer
+};
