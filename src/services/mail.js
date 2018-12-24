@@ -71,6 +71,17 @@ const volunteer = applicant => {
   gun.sendMail(mail, (err, info) => (err ? console.log(err) : info));
 };
 
+const volunteer = applicant => {
+  const mail = {
+    from: `MangoHacks <${MAILGUN_EMAIL}>`,
+    to: applicant.email,
+    subject: `MangoHacks registration is live! 🎉`,
+    template: "prereg",
+    context: { firstName: applicant.firstName }
+  };
+  gun.sendMail(mail, (err, info) => (err ? console.log(err) : info));
+};
+
 const error = e => {
   const mail = {
     from: "MangoHacks",
