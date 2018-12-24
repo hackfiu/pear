@@ -1,4 +1,4 @@
-![Pear](https://res.cloudinary.com/biensupernice/image/upload/v1545690232/banner_feglhi.jpg)
+![Pear](https://github.com/hackfiu/pear/blob/mentor-and-workshops/assets/banner.jpg?raw=true)
 
 ## Getting started
 
