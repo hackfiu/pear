@@ -4,7 +4,7 @@ import httpResponse from "../utils/httpResponses";
 
 const confirmed = async (req, res) => {
   try {
-    const confirmed = await Applicant.find({ confirmed: true });
+    const confirmed = await Applicant.find({ confirmation: true }).exec();
 
     httpResponse.successResponse(res, confirmed);
   } catch (e) {
@@ -12,12 +12,34 @@ const confirmed = async (req, res) => {
   }
 };
 
-const unconfirmed = (req, rss) => {};
+const unconfirmed = async (req, res) => {
+  try {
+    const unconfirmed = await Applicant.find({ confirmation: false }).exec();
 
-const females = (req, res) => {};
+    httpResponse.successResponse(res, unconfirmed);
+  } catch (e) {
+    httpResponse.failureResponse(res, e);
+  }
+};
 
-const males = (req, res) => {};
+const females = async (req, res) => {
+  try {
+    const females = await Applicant.find({ gender: "FEMALE" }).exec();
 
-const school = (req, res) => {};
+    httpResponse.successResponse(res, females);
+  } catch (e) {
+    httpResponse.failureResponse(res, e);
+  }
+};
 
-export default { confirmed, unconfirmed, females, males, school };
+const males = async (req, res) => {
+  try {
+    const males = await Applicant.find({ gender: "MALE" }).exec();
+
+    httpResponse.successResponse(res, males);
+  } catch (e) {
+    httpResponse.failureResponse(res, e);
+  }
+};
+
+export default { confirmed, unconfirmed, females, males };
