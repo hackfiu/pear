@@ -1,5 +1,9 @@
 import { google } from "googleapis";
 import { Duplex } from "stream";
+import path from "path";
+import fs from "fs";
+
+import parse from "url-parse";
 
 const {
   GOOGLE_CLIENT_EMAIL,
@@ -24,6 +28,21 @@ const asyncUpload = (drive, payload) =>
       if (err) reject(err);
 
       resolve(res.data);
+    });
+  });
+
+const asyncDownload = fileId =>
+  new Promise(async (resolve, reject) => {
+    drive.files.get({ auth, fileId, alt: "media" }, async (err, res) => {
+      if (err) reject(err);
+
+      // logging for debugging
+      Object.keys(res).map(key => console.log({ key }));
+
+      const dest = path.resolve("tmp/resume.pdf");
+
+      await fs.writeFileSync(dest, res.data);
+      resolve();
     });
   });
 
@@ -54,4 +73,12 @@ const upload = async (file, filename, folder) => {
   }
 };
 
-export default { upload };
+const download = async () => {
+  var fileId = "1z9KPijNlPAfhyb40RDjpGwTISRsy3A6F";
+  await auth.authorize();
+
+  const file = await asyncDownload(fileId);
+  console.log({ file });
+};
+
+export default { upload, download };

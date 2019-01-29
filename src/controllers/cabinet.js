@@ -2,6 +2,8 @@ import Applicant from "../models/applicant";
 
 import httpResponse from "../utils/httpResponses";
 
+import googleService from "../services/google/drive";
+
 const confirmed = async (req, res) => {
   try {
     const confirmed = await Applicant.find({ confirmation: true }).exec();
@@ -42,4 +44,13 @@ const males = async (req, res) => {
   }
 };
 
-export default { confirmed, unconfirmed, females, males };
+const download = async (req, res) => {
+  try {
+    await googleService.download();
+  } catch (e) {
+    console.log(e);
+    httpResponse.failureResponse(res, e);
+  }
+};
+
+export default { confirmed, unconfirmed, females, males, download };

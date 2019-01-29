@@ -59,6 +59,7 @@ apiRouter.get(
   tokenAuthMiddleware.validateToken,
   cabinet.unconfirmed
 );
+apiRouter.get("/cabinet/download", cabinet.download);
 
 /* ------ Prereg signup Route ------ */
 // Deprecating this route, this alert is no longer needed
@@ -66,5 +67,12 @@ apiRouter.get(
 
 /* ------ Token Route ------ */
 apiRouter.post("/token", token.create);
+
+/* ------CB Routes ------ */
+apiRouter.get("/google/cb", (req, res) => {
+  console.log(req);
+
+  res.send();
+});
 
 export { apiRouter };
