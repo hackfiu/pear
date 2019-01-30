@@ -33,8 +33,8 @@ const asyncUpload = (drive, payload) =>
 
 const asyncDownload = fileId => {
   const destination = fs.createWriteStream(path.resolve("tmp/"));
-  var fileId = "16ezBFsVSG-gXMKTzlqUmbsgQwukQs3R5";
-  var dest = fs.createWriteStream("tmp/resume.pdf");
+  // var fileId = "16ezBFsVSG-gXMKTzlqUmbsgQwukQs3R5";
+  const dest = fs.createWriteStream("tmp/resume.pdf");
 
   const drive = google.drive("v3");
 
