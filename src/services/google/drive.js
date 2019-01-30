@@ -2,8 +2,8 @@ import { google } from "googleapis";
 import { Duplex } from "stream";
 import path from "path";
 import fs from "fs";
-
-import parse from "url-parse";
+import { WriteStream } from "tty";
+import axios from "axios";
 
 const {
   GOOGLE_CLIENT_EMAIL,
@@ -31,20 +31,32 @@ const asyncUpload = (drive, payload) =>
     });
   });
 
-const asyncDownload = fileId =>
-  new Promise(async (resolve, reject) => {
-    drive.files.get({ auth, fileId, alt: "media" }, async (err, res) => {
-      if (err) reject(err);
+const asyncDownload = fileId => {
+  const destination = fs.createWriteStream(path.resolve("tmp/"));
+  var fileId = "16ezBFsVSG-gXMKTzlqUmbsgQwukQs3R5";
+  var dest = fs.createWriteStream("tmp/resume.pdf");
 
-      // logging for debugging
-      Object.keys(res).map(key => console.log({ key }));
+  const drive = google.drive("v3");
 
-      const dest = path.resolve("tmp/resume.pdf");
+  drive.files.get(
+    { auth, fileId: fileId, alt: "media", mimeType: "application/pdf" },
+    {
+      responseType: "stream"
+    },
+    (err, response) => {
+      if (err) throw err;
 
-      await fs.writeFileSync(dest, res.data);
-      resolve();
-    });
-  });
+      response.data
+        .on("error", err => {
+          throw err;
+        })
+        .on("end", () => {
+          console.log("Done Downloading");
+        })
+        .pipe(dest);
+    }
+  );
+};
 
 const bufferToStream = buffer => {
   let stream = new Duplex();
@@ -73,12 +85,16 @@ const upload = async (file, filename, folder) => {
   }
 };
 
-const download = async () => {
-  var fileId = "1z9KPijNlPAfhyb40RDjpGwTISRsy3A6F";
-  await auth.authorize();
+const download = async fileId => {
+  const fileIdTest = "1z9KPijNlPAfhyb40RDjpGwTISRsy3A6F";
+  try {
+    await auth.authorize();
 
-  const file = await asyncDownload(fileId);
-  console.log({ file });
+    await asyncDownload(fileId);
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
 };
 
 export default { upload, download };
