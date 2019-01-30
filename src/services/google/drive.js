@@ -31,32 +31,32 @@ const asyncUpload = (drive, payload) =>
     });
   });
 
-const asyncDownload = fileId => {
-  const destination = fs.createWriteStream(path.resolve("tmp/"));
-  // var fileId = "16ezBFsVSG-gXMKTzlqUmbsgQwukQs3R5";
-  const dest = fs.createWriteStream("tmp/resume.pdf");
+const asyncDownload = fileId =>
+  new Promise((resolve, reject) => {
+    const file_path = path.resolve(`tmp/${fileId}.pdf`);
+    const dest = fs.createWriteStream(file_path);
 
-  const drive = google.drive("v3");
+    const drive = google.drive("v3");
 
-  drive.files.get(
-    { auth, fileId: fileId, alt: "media", mimeType: "application/pdf" },
-    {
-      responseType: "stream"
-    },
-    (err, response) => {
-      if (err) throw err;
+    drive.files.get(
+      { auth, fileId: fileId, alt: "media", mimeType: "application/pdf" },
+      {
+        responseType: "stream"
+      },
+      (err, response) => {
+        if (err) throw err;
 
-      response.data
-        .on("error", err => {
-          throw err;
-        })
-        .on("end", () => {
-          console.log("Done Downloading");
-        })
-        .pipe(dest);
-    }
-  );
-};
+        response.data
+          .on("error", err => {
+            throw err;
+          })
+          .on("end", () => {
+            resolve(file_path);
+          })
+          .pipe(dest);
+      }
+    );
+  });
 
 const bufferToStream = buffer => {
   let stream = new Duplex();
@@ -86,11 +86,12 @@ const upload = async (file, filename, folder) => {
 };
 
 const download = async fileId => {
-  const fileIdTest = "1z9KPijNlPAfhyb40RDjpGwTISRsy3A6F";
   try {
     await auth.authorize();
 
-    await asyncDownload(fileId);
+    const dest = await asyncDownload(fileId);
+
+    return dest;
   } catch (e) {
     console.log(e);
     throw e;

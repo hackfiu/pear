@@ -46,9 +46,12 @@ const males = async (req, res) => {
 
 const download = async (req, res) => {
   try {
-    await googleService.download();
+    const { id } = req.query;
+
+    const file_path = await googleService.download(id);
+
+    res.download(file_path);
   } catch (e) {
-    console.log(e);
     httpResponse.failureResponse(res, e);
   }
 };

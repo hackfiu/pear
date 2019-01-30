@@ -68,11 +68,4 @@ apiRouter.get("/cabinet/download", cabinet.download);
 /* ------ Token Route ------ */
 apiRouter.post("/token", token.create);
 
-/* ------CB Routes ------ */
-apiRouter.get("/google/cb", (req, res) => {
-  console.log(req);
-
-  res.send();
-});
-
 export { apiRouter };
