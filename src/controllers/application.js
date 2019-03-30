@@ -6,6 +6,7 @@ import applicationService from "../services/application";
 
 import logger from "../utils/logger";
 import httpResponse from "../utils/httpResponses";
+import bcrypt from 'bcrypt';
 
 import Applicant from "../models/applicant";
 
@@ -246,4 +247,21 @@ const confirm = async (req,res) => {
   }
 }
 
-export default { create, read, update,confirm, acceptOne, acceptSchool};
+const login = async (req, res) => {
+  try{
+    const user = await Applicant.findOne({
+      email
+    })
+  
+
+    const correctPass = bcrypt.compareSync(password, user.password)
+    if (!user || !correctPass)
+      return ('Wrong login info')
+    
+    
+  } catch(err){
+    return 'Invalid information'
+  }
+}
+
+export default { create, read, update,confirm, acceptOne, acceptSchool, login};
