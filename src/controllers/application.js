@@ -252,15 +252,14 @@ const login = async (req, res) => {
     const user = await Applicant.findOne({
       email
     })
-  
-
     const correctPass = bcrypt.compareSync(password, user.password)
     if (!user || !correctPass)
-      return ('Wrong login info')
+      throw new Error('Wrong login info')
     
+    return user;
     
-  } catch(err){
-    return 'Invalid information'
+  } catch(e){
+    httpResponse.failureRespone(res, e)
   }
 }
 
